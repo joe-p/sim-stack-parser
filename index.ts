@@ -71,9 +71,8 @@ function adjustWidth(line: string, width: number) {
 function printFullTrace(fullTrace: FullTrace, width: number = 30) {
   fullTrace.forEach((t) => {
     const teal = adjustWidth(t.teal.trim(), width);
-    const scratchDelta = adjustWidth((JSON.stringify(t.scratchDelta) || ''), width);
     const pc = t.pc.toString().padEnd(4);
-    console.log(`${teal} | ${pc} | ${scratchDelta} | [${t.stack}]`);
+    console.log(`${teal} | ${pc} | [${t.stack}]`);
   });
 }
 
