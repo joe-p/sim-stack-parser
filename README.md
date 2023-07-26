@@ -1,5 +1,7 @@
 Script for printing stack trace from simulate response. Truncated TEAL lines end with `...`
 ```
+TEAL                           | PC   | STACK
+-------------------------------|------|-------
 #pragma version 8              | 1    | []
 txn ApplicationID      // o... | 4    | [1005]
 bz end                         | 6    | []

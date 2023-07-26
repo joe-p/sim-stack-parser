@@ -69,6 +69,8 @@ function adjustWidth(line: string, width: number) {
 }
 
 function printFullTrace(fullTrace: FullTrace, width: number = 30) {
+  console.log(`${'TEAL'.padEnd(width)} | PC   | STACK`);
+  console.log(`${'-'.repeat(width)}-|------|${'-'.repeat(7)}`);
   fullTrace.forEach((t) => {
     const teal = adjustWidth(t.teal.trim(), width);
     const pc = t.pc.toString().padEnd(4);
