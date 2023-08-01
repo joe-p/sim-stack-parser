@@ -7,6 +7,14 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
+"@algorandfoundation/algokit-utils@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@algorandfoundation/algokit-utils/-/algokit-utils-2.3.2.tgz#6b91077bdd0d197fc9280d62b68f62e14d360f74"
+  integrity sha512-+Q4b8OVXogjkthapH04k+AqY19hxklfXFTmvoaQdQbbo2rUk1AgSXBRq0ThVg7n7RhfSMMUh0ZIL5bpse7MSKA==
+  dependencies:
+    algosdk "^2.3.0"
+    buffer "^6.0.3"
+
 "@esbuild-kit/cjs-loader@^2.4.2":
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/@esbuild-kit/cjs-loader/-/cjs-loader-2.4.2.tgz#cb4dde00fbf744a68c4f20162ea15a8242d0fa54"
@@ -344,7 +352,7 @@ algo-msgpack-with-bigint@^2.1.1:
   resolved "https://registry.yarnpkg.com/algo-msgpack-with-bigint/-/algo-msgpack-with-bigint-2.1.1.tgz#38bb717220525b3ff42232eefdcd9efb9ad405d6"
   integrity sha512-F1tGh056XczEaEAqu7s+hlZUDWwOBT70Eq0lfMpBP2YguSQVyxRbprLq5rELXKQOyOaixTWYhMeMQMzP0U5FoQ==
 
-algosdk@^2.4.0:
+algosdk@^2.3.0, algosdk@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/algosdk/-/algosdk-2.4.0.tgz#6519bbefb12ac5b0e2442463f181fefdce1cf2b0"
   integrity sha512-sENe6IyUqvhQprfS/7gJAkPC5sX2LI5uc+gXaKNgzKp72UEyXYSoN3h4MZkOlCrOcTSWTJW7605tYgg8nFkflw==

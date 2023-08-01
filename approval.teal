@@ -1,45 +1,59 @@
-#pragma version 8
-txn ApplicationID      // on creation, always approve
-bz end
-
-txn NumAppArgs
-int 1
-==
-assert
-
-txn ApplicationArgs 0
-btoi
-callsub subroutine_manipulating_stack
-itob
-log
-b end
-
-subroutine_manipulating_stack:
-  proto 1 1
-  int 0                                   // [0]
-  dup                                     // [0, 0]
-  dupn 4                                  // [0, 0, 0, 0, 0, 0]
-  frame_dig -1                            // [0, 0, 0, 0, 0, 0, arg_0]
-  frame_bury 0                            // [arg_0, 0, 0, 0, 0, 0]
-  dig 5                                   // [arg_0, 0, 0, 0, 0, 0, arg_0]
-  cover 5                                 // [arg_0, arg_0, 0, 0, 0, 0, 0]
-  frame_dig 0                             // [arg_0, arg_0, 0, 0, 0, 0, 0, arg_0]
-  frame_dig 1                             // [arg_0, arg_0, 0, 0, 0, 0, 0, arg_0, arg_0]
-  +                                       // [arg_0, arg_0, 0, 0, 0, 0, 0, arg_0 * 2]
-  bury 7                                  // [arg_0 * 2, arg_0, 0, 0, 0, 0, 0]
-  popn 5                                  // [arg_0 * 2, arg_0]
-  uncover 1                               // [arg_0, arg_0 * 2]
-  swap                                    // [arg_0 * 2, arg_0]
-  +                                       // [arg_0 * 3]
-  pushbytess "1!" "5!"                    // [arg_0 * 3, "1!", "5!"]
-  pushints 0 2 1 1 5 18446744073709551615 // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1, 5, 18446744073709551615]
-  store 1                                 // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1, 5]
-  load 1                                  // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1, 5, 18446744073709551615]
-  stores                                  // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1]
-  load 1                                  // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1, 18446744073709551615]
-  store 1                                 // [arg_0 * 3, "1!", "5!", 0, 2, 1, 1]
-  retsub
-
-end:
-  int 1
-  return
+// GENERATED TEAL           //    PC     PYTEAL PATH    LINE    PYTEAL
+#pragma version 6           //    (0)    app.py         27      router.compile(version=6, optimize=OptimizeOptions(scratch_slots=True), with_sourcemaps=True, annotate_teal=True, pcs_in_sourcemap=True, annotate_teal_headers=True, annotate_teal_concise=False)
+txn NumAppArgs              //    (5)                   9       BareCallActions(no_op=OnCompleteAction(action=pt.Approve(), call_config=CallConfig.CREATE))
+int 0                       //    (7)
+==                          //    (8)
+bnz main_l4                 //    (9)
+txna ApplicationArgs 0      //    (12)                  15      def hello(name: pt.abi.String):
+method "hello(string)void"  //    (15)
+==                          //    (21)
+bnz main_l3                 //    (22)
+err                         //    (25)                  27      router.compile(version=6, optimize=OptimizeOptions(scratch_slots=True), with_sourcemaps=True, annotate_teal=True, pcs_in_sourcemap=True, annotate_teal_headers=True, annotate_teal_concise=False)
+main_l3:                    //                          15      def hello(name: pt.abi.String):
+txn OnCompletion            //    (26)
+int NoOp                    //    (28)
+==                          //    (29)
+txn ApplicationID           //    (30)
+int 0                       //    (32)
+!=                          //    (33)
+&&                          //    (34)
+assert                      //    (35)
+txna ApplicationArgs 1      //    (36)
+callsub hello_0             //    (39)
+int 1                       //    (42)
+return                      //    (43)
+main_l4:                    //                          10      OnCompleteAction(action=pt.Approve(), call_config=CallConfig.CREATE)
+txn OnCompletion            //    (44)
+int NoOp                    //    (46)
+==                          //    (47)
+bnz main_l6                 //    (48)
+err                         //    (51)                  9       BareCallActions(no_op=OnCompleteAction(action=pt.Approve(), call_config=CallConfig.CREATE))
+main_l6:                    //                          10      OnCompleteAction(action=pt.Approve(), call_config=CallConfig.CREATE)
+txn ApplicationID           //    (52)
+int 0                       //    (54)
+==                          //    (55)
+assert                      //    (56)
+int 1                       //    (57)                          pt.Approve()
+return                      //    (58)
+                            //                          15      def hello(name: pt.abi.String):
+// hello                    //
+hello_0:                    //
+extract 2 0                 //    (59)                  18      name.get()
+store 0                     //    (62)                          name_scratch.store(name.get())
+byte "Hello, "              //    (64)                  19      pt.Bytes('Hello, ')
+load 0                      //    (73)                          name_scratch.load()
+concat                      //    (75)                          pt.Concat(pt.Bytes('Hello, '), name_scratch.load())
+log                         //    (76)                          pt.Log(pt.Concat(pt.Bytes('Hello, '), name_scratch.load()))
+load 0                      //    (77)                  20      name_scratch.load()
+len                         //    (79)                          pt.Len(name_scratch.load())
+int 5                       //    (80)                          pt.Int(5)
+<=                          //    (82)                          pt.Len(name_scratch.load()) <= pt.Int(5)
+bnz hello_0_l2              //    (83)                          pt.If(pt.Len(name_scratch.load()) <= pt.Int(5))
+byte "Your name is long!"   //    (86)                  23      pt.Bytes('Your name is long!')
+log                         //    (106)                         pt.Log(pt.Bytes('Your name is long!'))
+b hello_0_l3                //    (107)                 20      pt.If(pt.Len(name_scratch.load()) <= pt.Int(5))
+hello_0_l2:                 //
+byte "Your name is short!"  //    (110)                 21      pt.Bytes('Your name is short!')
+log                         //    (131)                         pt.Log(pt.Bytes('Your name is short!'))
+hello_0_l3:                 //                          20      pt.If(pt.Len(name_scratch.load()) <= pt.Int(5))
+retsub                      //    (132)                 15      def hello(name: pt.abi.String):

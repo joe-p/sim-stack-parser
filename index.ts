@@ -78,13 +78,50 @@ function printFullTrace(fullTrace: FullTrace, width: number = 30) {
   });
 }
 
+function printFullPyTealTrace(
+  fullTrace: FullTrace,
+  pytealMapping: {[pc: number]: string},
+  tealWidth: number = 10,
+  pytealWidth: number = 40,
+) {
+  console.log(`${'TEAL'.padEnd(tealWidth)} | PC   | ${'PyTeal'.padEnd(pytealWidth)} | STACK`);
+  console.log(`${'-'.repeat(tealWidth)}-|------|-${'-'.repeat(pytealWidth)}-|${'-'.repeat(7)}`);
+  fullTrace.forEach((t) => {
+    const teal = adjustWidth(t.teal.trim(), tealWidth);
+    const pyteal = adjustWidth(pytealMapping[t.pc] || '', pytealWidth);
+    const pc = t.pc.toString().padEnd(4);
+    console.log(`${teal} | ${pc} | ${pyteal} | [${t.stack}]`);
+  });
+}
+
+function getPcToPyteal(annotatedTeal: string) {
+  const annotatedTealLines = annotatedTeal.toString().split('\n');
+  const annotationStart = annotatedTealLines[0].indexOf('//    PC');
+  const pytealStart = annotatedTealLines[0].match(/PYTEAL$/)!.index;
+
+  const mapping = {};
+  annotatedTealLines.slice(1).forEach((line) => {
+    const annotation = line.slice(annotationStart);
+    if (annotation.slice(2) === '') return;
+    const pc = Number(annotation.match(/\d+/)![0]);
+    const pyteal = line.slice(pytealStart).trim();
+    mapping[pc] = pyteal;
+  });
+
+  return mapping;
+}
+
 async function main() {
   const trace = response['txn-groups'][0]['txn-results'][0]['exec-trace']['approval-program-trace'];
   const teal = fs.readFileSync('approval.teal', 'utf8');
 
   const algodClient = new algosdk.Algodv2('a'.repeat(64), 'http://localhost', 4001);
   const fullTrace = await getFullTrace(trace, teal, algodClient);
-  printFullTrace(fullTrace);
+  // printFullTrace(fullTrace);
+
+  const pytealMapping = getPcToPyteal(fs.readFileSync('./approval.teal').toString());
+
+  printFullPyTealTrace(fullTrace, pytealMapping);
 }
 
 main();
