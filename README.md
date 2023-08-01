@@ -43,52 +43,7 @@ return      ... | 43   | app.py     |      |                                    
 ```
 
 # TEAL Trace
-```
-TEAL            | PC   | FILE       | LINE | PyTeal                                   | STACK
-----------------|------|------------|------|------------------------------------------|-------
-// GENERATED... | 1    |            |      |                                          | []
-txn NumAppAr... | 5    | app.py     | 9    | BareCallActions(no_op=OnCompleteActio... | [2]
-int 0       ... | 7    | app.py     |      |                                          | [2,0]
-==          ... | 8    | app.py     |      |                                          | [0]
-bnz main_l4 ... | 9    | app.py     |      |                                          | []
-txna Applica... | 12   | app.py     | 15   | def hello(name: pt.abi.String):          | [0x90e75c9d]
-method "hell... | 15   | app.py     |      |                                          | [0x90e75c9d,0x90e75c9d]
-==          ... | 21   | app.py     |      |                                          | [1]
-bnz main_l3 ... | 22   | app.py     |      |                                          | []
-txn OnComple... | 26   | app.py     |      |                                          | [0]
-int NoOp    ... | 28   | app.py     |      |                                          | [0,0]
-==          ... | 29   | app.py     |      |                                          | [1]
-txn Applicat... | 30   | app.py     |      |                                          | [1,1008]
-int 0       ... | 32   | app.py     |      |                                          | [1,1008,0]
-!=          ... | 33   | app.py     |      |                                          | [1,1]
-&&          ... | 34   | app.py     |      |                                          | [1]
-assert      ... | 35   | app.py     |      |                                          | []
-txna Applica... | 36   | app.py     |      |                                          | [0x0007416c676f446576]
-callsub hell... | 39   | app.py     |      |                                          | [0x0007416c676f446576]
-extract 2 0 ... | 59   | app.py     | 18   | name.get()                               | [0x416c676f446576]
-store 0     ... | 62   | app.py     |      | name_scratch.store(name.get())           | []
-byte "Hello,... | 64   | app.py     | 19   | pt.Bytes('Hello, ')                      | [0x48656c6c6f2c20]
-load 0      ... | 73   | app.py     |      | name_scratch.load()                      | [0x48656c6c6f2c20,0x416c676f446576]
-concat      ... | 75   | app.py     |      | pt.Concat(pt.Bytes('Hello, '), name_s... | [0x48656c6c6f2c20416c676f446576]
-log         ... | 76   | app.py     |      | pt.Log(pt.Concat(pt.Bytes('Hello, '),... | []
-load 0      ... | 77   | app.py     | 20   | name_scratch.load()                      | [0x416c676f446576]
-len         ... | 79   | app.py     |      | pt.Len(name_scratch.load())              | [7]
-int 5       ... | 80   | app.py     |      | pt.Int(5)                                | [7,5]
-<=          ... | 82   | app.py     |      | pt.Len(name_scratch.load()) <= pt.Int(5) | [0]
-bnz hello_0_... | 83   | app.py     |      | pt.If(pt.Len(name_scratch.load()) <= ... | []
-byte "Your n... | 86   | app.py     | 23   | pt.Bytes('Your name is long!')           | [0x596f7572206e616d65206973206c6f6e6721]
-log         ... | 106  | app.py     |      | pt.Log(pt.Bytes('Your name is long!'))   | []
-b hello_0_l3... | 107  | app.py     | 20   | pt.If(pt.Len(name_scratch.load()) <= ... | []
-retsub      ... | 132  | app.py     | 15   | def hello(name: pt.abi.String):          | []
-int 1       ... | 42   | app.py     |      |                                          | [1]
-return      ... | 43   | app.py     |      |                                          | [1]
-✨  Done in 0.47s.
-
-~/git/joe-p/sim-stack-parser pyteal !1 ───────────────────────────────────────────────────────────────────────────────────── ✔ 0.707s 03:59:51 PM
-❯ yarn tsx index.ts
-yarn run v1.22.19
-$ /Users/joe/git/joe-p/sim-stack-parser/node_modules/.bin/tsx index.ts
-TEAL                           | PC   | STACK
+```TEAL                           | PC   | STACK
 -------------------------------|------|-------
 // GENERATED TEAL          ... | 1    | []
 txn NumAppArgs             ... | 5    | [2]
