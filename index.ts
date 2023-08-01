@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs';
 import algosdk from 'algosdk';
 import response from './response.json';
@@ -8,6 +9,14 @@ type FullTrace = {
     scratchDelta?: {[slot: number]: string | number}
     stack: (string | number)[]
 }[]
+
+type PytealMapping = {
+    [pc: number]: {
+      pyteal: string
+      line: number
+      file: string
+    }
+}
 
 async function getFullTrace(
   simTrace: any[],
@@ -80,32 +89,57 @@ function printFullTrace(fullTrace: FullTrace, width: number = 30) {
 
 function printFullPyTealTrace(
   fullTrace: FullTrace,
-  pytealMapping: {[pc: number]: string},
-  tealWidth: number = 10,
+  pytealMapping: PytealMapping,
+  tealWidth: number = 15,
   pytealWidth: number = 40,
 ) {
-  console.log(`${'TEAL'.padEnd(tealWidth)} | PC   | ${'PyTeal'.padEnd(pytealWidth)} | STACK`);
-  console.log(`${'-'.repeat(tealWidth)}-|------|-${'-'.repeat(pytealWidth)}-|${'-'.repeat(7)}`);
+  console.log(`${'TEAL'.padEnd(tealWidth)} | PC   | ${'FILE'.padEnd(10)} | LINE | ${'PyTeal'.padEnd(pytealWidth)} | STACK`);
+  console.log(`${'-'.repeat(tealWidth)}-|------|-${'-'.repeat(10)}-|------|-${'-'.repeat(pytealWidth)}-|${'-'.repeat(7)}`);
   fullTrace.forEach((t) => {
     const teal = adjustWidth(t.teal.trim(), tealWidth);
-    const pyteal = adjustWidth(pytealMapping[t.pc] || '', pytealWidth);
+    const pyteal = adjustWidth(pytealMapping[t.pc]?.pyteal || '', pytealWidth);
     const pc = t.pc.toString().padEnd(4);
-    console.log(`${teal} | ${pc} | ${pyteal} | [${t.stack}]`);
+    const file = adjustWidth(pytealMapping[t.pc]?.file || '', 10);
+    const line = (pytealMapping[t.pc]?.line || '').toString().padEnd(4);
+
+    console.log(`${teal} | ${pc} | ${file} | ${line} | ${pyteal} | [${t.stack}]`);
   });
 }
 
 function getPcToPyteal(annotatedTeal: string) {
   const annotatedTealLines = annotatedTeal.toString().split('\n');
   const annotationStart = annotatedTealLines[0].indexOf('//    PC');
+  const pytealPathStart = annotatedTealLines[0].indexOf('PYTEAL PATH');
+  const pytealLineStart = annotatedTealLines[0].indexOf('LINE');
   const pytealStart = annotatedTealLines[0].match(/PYTEAL$/)!.index;
 
-  const mapping = {};
+  const mapping: PytealMapping = {};
+  let lastFile = '';
   annotatedTealLines.slice(1).forEach((line) => {
     const annotation = line.slice(annotationStart);
     if (annotation.slice(2) === '') return;
-    const pc = Number(annotation.match(/\d+/)![0]);
+
+    const pcStr = line.slice(annotationStart + 2, pytealPathStart).trim();
+
+    if (pcStr === '') return;
+
+    const pc = Number(pcStr.slice(1, -1));
+
+    let file = line.slice(pytealPathStart, pytealLineStart).trim();
+    if (file === '') {
+      file = lastFile;
+    } else {
+      lastFile = file;
+    }
+
+    const lineNumber = Number(line.slice(pytealLineStart, pytealStart).trim());
+
     const pyteal = line.slice(pytealStart).trim();
-    mapping[pc] = pyteal;
+    mapping[pc] = {
+      pyteal,
+      file,
+      line: lineNumber,
+    };
   });
 
   return mapping;
@@ -117,7 +151,7 @@ async function main() {
 
   const algodClient = new algosdk.Algodv2('a'.repeat(64), 'http://localhost', 4001);
   const fullTrace = await getFullTrace(trace, teal, algodClient);
-  // printFullTrace(fullTrace);
+  printFullTrace(fullTrace);
 
   const pytealMapping = getPcToPyteal(fs.readFileSync('./approval.teal').toString());
 
